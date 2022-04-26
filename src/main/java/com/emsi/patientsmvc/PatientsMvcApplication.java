@@ -1,7 +1,7 @@
-package ma.enset.patientsmvc;
+package com.emsi.patientsmvc;
 
-import ma.enset.patientsmvc.entities.Patient;
-import ma.enset.patientsmvc.repositories.PatientRepository;
+import com.emsi.patientsmvc.entities.Patient;
+import com.emsi.patientsmvc.repositories.PatientRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,14 +19,15 @@ public class PatientsMvcApplication {
     @Bean
     CommandLineRunner commandLineRunner(PatientRepository patientRepository){
         return args -> {
-            patientRepository.save(
-                    new Patient(null,"Hassan",new Date(),false,12));
-            patientRepository.save(
-                    new Patient(null,"Mohammed",new Date(),true,321));
-            patientRepository.save(
-                    new Patient(null,"Yasmine",new Date(),true,65));
-            patientRepository.save(
-                    new Patient(null,"Hanae",new Date(),false,32));
+            for (int i = 0; i < 10; i++) {
+                patientRepository.save(
+                        new Patient(null,"Mohammed",new Date(),true,321));
+                patientRepository.save(
+                        new Patient(null,"Yasmine",new Date(),true,110));
+                patientRepository.save(
+                        new Patient(null,"Hanae",new Date(),false,320));
+            }
+
 
             patientRepository.findAll().forEach(p->{
                 System.out.println(p.getNom());
