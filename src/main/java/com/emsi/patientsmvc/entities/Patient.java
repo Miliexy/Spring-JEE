@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
 @Entity
 @Data @AllArgsConstructor @NoArgsConstructor
@@ -25,4 +26,6 @@ public class Patient {
     private boolean malade;
     @DecimalMin("100")
     private int score;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Doctor doctor;
 }

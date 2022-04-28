@@ -1,6 +1,8 @@
 package com.emsi.patientsmvc.web;
 
+import com.emsi.patientsmvc.entities.Doctor;
 import com.emsi.patientsmvc.entities.Patient;
+import com.emsi.patientsmvc.repositories.DoctorRepository;
 import com.emsi.patientsmvc.repositories.PatientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +22,9 @@ import java.util.List;
 @AllArgsConstructor
 public class PatientController {
     private PatientRepository patientRepository;
-    @GetMapping(path = "/index")
+    private DoctorRepository doctorRepository;
+
+    @GetMapping(path = "/user/index")
     public String patients(Model model,
                            @RequestParam(name = "page",defaultValue = "0") int page,
                            @RequestParam(name = "size",defaultValue = "5") int size,
@@ -34,47 +38,47 @@ public class PatientController {
         return "patients";
     }
 
-    @GetMapping(path ="/ajouterPatient")
-    public String add(){
-        return "ajouterPatient";
-    }
-    @GetMapping("/delete")
+    @GetMapping("/admin/delete")
     public String delete(Long id, String keyword, int page) {
         patientRepository.deleteById(id);
-        return "redirect:/index?page="+page+"&keyword="+keyword;
+        return "redirect:/user/index?page="+page+"&keyword="+keyword;
     }
     @GetMapping("/")
     public String home() {
-        return "redirect:/index";
+        return "home";
     }
 
 
-    @GetMapping("/patients")
+    @GetMapping("/user/patients")
     @ResponseBody
     public List<Patient> lisPatients(){
+
         return patientRepository.findAll();
     }
 
-    @GetMapping("/formPatients")
+
+    @GetMapping("/admin/formPatients")
     public String formPatients(Model model){
         model.addAttribute("patient", new Patient());
         return "formPatients";
     }
 
-    @PostMapping("/save")
+    @PostMapping("/admin/save")
     public String save(Model model, @Valid Patient patient, BindingResult bindingResult,
                        @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String keyword){
         if(bindingResult.hasErrors()) return "formPatients";
         patientRepository.save(patient);
-        return "redirect:/index?page="+page+"&keyword="+keyword;
+        return "redirect:/user/index?page="+page+"&keyword="+keyword;
     }
 
-    @GetMapping("/editPatient")
+    @GetMapping("/admin/editPatient")
     public String editPatient(Model model, Long id, String keyword, int page){
+        List<Doctor> doctorList= doctorRepository.findAll();
         Patient patient = patientRepository.findById(id).orElse(null);
         if(patient==null) throw new RuntimeException("Patient Introuvable");
 
         model.addAttribute("patient", patient);
+        model.addAttribute("doctors", doctorList);
         model.addAttribute("page", page);
         model.addAttribute("keyword", keyword);
         return "editPatient";
